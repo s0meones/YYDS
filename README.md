@@ -1,1 +1,1 @@
-https://raw.githubusercontent.com/s0meones/YYDS/master/Mihomo.yaml
+https://raw.githubusercontent.com/s0meones/YYDS/master/MihomoPro.yaml

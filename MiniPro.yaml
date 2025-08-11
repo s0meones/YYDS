@@ -1,0 +1,194 @@
+proxies: 
+  
+  - {name: 直连, type: direct}
+
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7894
+allow-lan: true
+bind-address: "*"
+ipv6: true
+unified-delay: true
+tcp-concurrent: true
+log-level: warning
+find-process-mode: 'off'
+global-client-fingerprint: chrome
+keep-alive-idle: 600
+keep-alive-interval: 15
+disable-keep-alive: false
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+
+external-controller: 0.0.0.0:9090
+secret: ""
+external-ui: "/etc/mihomo/run/ui"
+external-ui-name: zashboard
+external-ui-url: "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+tun:
+  enable: true
+  stack: mixed
+  dns-hijack: ["any:53", "tcp://any:53"]
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: true
+  respect-rules: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 28.0.0.1/8
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "rule-set:private_domain,cn_domain"
+    - "+.services.googleapis.cn"
+    - "+.xn--ngstr-lra8j.com"
+    - "time.*.com"
+  default-nameserver:
+    - 223.5.5.5
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+
+proxy-groups:
+
+  - name: Final漏网之鱼
+    include-all: true
+    type: select
+    exclude-type: direct
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Final.png"
+  
+  - name: YouTube
+    type: select
+    proxies: [香港,美国]
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/YouTube.png"
+
+  - name: AI
+    type: select
+    include-all: true
+    filter: "(?i)美|us|hk_ix"
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/ChatGPT.png"
+
+
+  - name: Telegram
+    type: select
+    proxies: [香港,美国]
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Telegram.png"
+
+  - name: NETFLIX
+    include-all: true
+    type: select
+    filter: "(?i)美|us|sg"
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Netflix.png"
+
+  - name: Speedtest
+    include-all: true
+    type: select
+    exclude-type: direct
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Speedtest.png"  
+
+  - name: 香港
+    type: fallback
+    include-all: true
+    exclude-type: direct
+    tolerance: 10
+    filter: "(?i)港|hk|hongkong|hong kong"
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Hong_Kong.png"
+
+  - name: 美国
+    type: select
+    include-all: true
+    exclude-type: direct
+    filter: "(?i)美|us|unitedstates|united states"
+    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/United_States.png"
+
+
+
+rules:
+  - DOMAIN-SUFFIX,1password.com,Final漏网之鱼
+  - DOMAIN-SUFFIX,kuxueyun.com,直连
+  - RULE-SET,private_domain,直连
+  - RULE-SET,ai,AI
+  - RULE-SET,youtube_domain,YouTube
+  - RULE-SET,telegram_domain,Telegram
+  - RULE-SET,netflix_domain,NETFLIX
+  - RULE-SET,speedtest_domain,Speedtest
+  - RULE-SET,geolocation-!cn,Final漏网之鱼
+  - RULE-SET,cn_domain,直连
+  - RULE-SET,netflix_ip,NETFLIX,no-resolve
+  - RULE-SET,telegram_ip,Telegram,no-resolve
+  - RULE-SET,cn_ip,直连
+  - MATCH,Final漏网之鱼
+
+
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+rule-providers:
+  private_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
+  cn_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+  ai:
+    <<: *domain
+    url: "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-!cn.mrs"
+  youtube_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+  google_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+  telegram_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
+  netflix_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"
+  speedtest_domain:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ookla-speedtest.mrs"
+  geolocation-!cn:
+    <<: *domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"
+
+  private_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"
+  cn_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+  google_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"
+  netflix_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"
+  telegram_ip:
+    <<: *ip
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"

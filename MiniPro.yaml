@@ -22,13 +22,11 @@ profile:
   store-selected: true
   store-fake-ip: true
 
-
 external-controller: 0.0.0.0:9090
 secret: ""
 external-ui: "/etc/mihomo/run/ui"
 external-ui-name: zashboard
 external-ui-url: "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
-
 
 sniffer:
   enable: true
@@ -73,7 +71,6 @@ dns:
     - 223.5.5.5
     - 119.29.29.29
 
-
 proxy-groups:
 
   - name: Final漏网之鱼
@@ -92,7 +89,6 @@ proxy-groups:
     include-all: true
     filter: "(?i)美|us|hk_ix"
     icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/ChatGPT.png"
-
 
   - name: Telegram
     type: select
@@ -126,8 +122,6 @@ proxy-groups:
     filter: "(?i)美|us|unitedstates|united states"
     icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/United_States.png"
 
-
-
 rules:
   - DOMAIN-SUFFIX,1password.com,Final漏网之鱼
   - DOMAIN-SUFFIX,kuxueyun.com,直连
@@ -143,7 +137,6 @@ rules:
   - RULE-SET,telegram_ip,Telegram,no-resolve
   - RULE-SET,cn_ip,直连
   - MATCH,Final漏网之鱼
-
 
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}

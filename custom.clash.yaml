@@ -76,47 +76,47 @@ proxy-groups:
   - name: Final漏网之鱼
     type: select
     proxies: [/UU/, "香港", "新加坡", "美国"]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Final.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Final.png"
   
   - name: YouTube
     type: select
     proxies: [/UU/, "香港", "新加坡", "美国"]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/YouTube.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/YouTube.png"
 
   - name: AI
     type: select
     proxies: [/UU/, "新加坡", "美国"]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/ChatGPT.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/ChatGPT.png"
 
   - name: Telegram
     type: select
     proxies: [/UU/, "香港", "新加坡", "美国"]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Telegram.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Telegram.png"
 
   - name: NETFLIX
     type: select
     proxies: [/SG/,/US/]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Netflix.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Netflix.png"
 
   - name: Speedtest
     type: select
     proxies: []
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Speedtest.png"  
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Speedtest.png"  
 
   - name: 香港
     type: select
     proxies: [/HK/]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Hong_Kong.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Hong_Kong.png"
 
   - name: 新加坡
     type: select
     proxies: [/SG/]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Singapore.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Singapore.png"
 
   - name: 美国
     type: select
     proxies: [/US/]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/United_States.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/United_States.png"
 
 rules:
   - IP-CIDR,15.204.57.0,Final漏网之鱼

@@ -214,7 +214,7 @@ const serviceConfigs = [
     key: 'openai',
     name: '国外AI',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/ChatGPT.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/ChatGPT.png',
     rules: [
       'GEOSITE,jetbrains-ai,国外AI',
       'GEOSITE,category-ai-!cn,国外AI',
@@ -227,14 +227,14 @@ const serviceConfigs = [
     key: 'youtube',
     name: 'YouTube',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/YouTube.png',
     rules: ['GEOSITE,youtube,YouTube']
   },
   {
     key: 'media-cn@!cn',
     name: '港澳台媒体',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TVB.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/TVB.png',
     rules: [
       'GEOSITE,tvb,港澳台媒体',
       'GEOSITE,hkt,港澳台媒体',
@@ -252,42 +252,42 @@ const serviceConfigs = [
     key: 'biliintl',
     name: '哔哩哔哩东南亚',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/bilibili_3.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/bilibili_3.png',
     rules: ['GEOSITE,biliintl,哔哩哔哩东南亚']
   },
   {
     key: 'bahamut',
     name: '巴哈姆特',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bahamut.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Bahamut.png',
     rules: ['GEOSITE,bahamut,巴哈姆特']
   },
   {
     key: 'disney',
     name: 'Disney+',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Disney+.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Disney+.png',
     rules: ['GEOSITE,disney,Disney+']
   },
   {
     key: 'netflix',
     name: 'NETFLIX',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Netflix.png',
     rules: ['GEOSITE,netflix,NETFLIX']
   },
   {
     key: 'tiktok',
     name: 'Tiktok',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/TikTok.png',
     rules: ['GEOSITE,tiktok,Tiktok']
   },
   {
     key: 'spotify',
     name: 'Spotify',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Spotify.png',
     rules: ['GEOSITE,spotify,Spotify']
   },
   {
@@ -301,35 +301,35 @@ const serviceConfigs = [
     key: 'hbo',
     name: 'HBO',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/HBO.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/HBO.png',
     rules: ['GEOSITE,hbo,HBO']
   },
   {
     key: 'tvb',
     name: 'TVB',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TVB.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/TVB.png',
     rules: ['GEOSITE,tvb,TVB']
   },
   {
     key: 'primevideo',
     name: 'Prime Video',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Prime_Video.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Prime_Video.png',
     rules: ['GEOSITE,primevideo,Prime Video']
   },
   {
     key: 'hulu',
     name: 'Hulu',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hulu.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Hulu.png',
     rules: ['GEOSITE,hulu,Hulu']
   },
   {
     key: 'telegram',
     name: 'Telegram',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Telegram.png',
     rules: ['GEOIP,telegram,Telegram']
   },
   {
@@ -343,14 +343,14 @@ const serviceConfigs = [
     key: 'line',
     name: 'Line',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Line.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Line.png',
     rules: ['GEOSITE,line,Line']
   },
   {
     key: 'games',
     name: '游戏专用',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Game.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Game.png',
     rules: [
       // 国内游戏：走 DIRECT（按你“cn 默认直连”的要求）
       'GEOSITE,category-games@cn,DIRECT',
@@ -362,7 +362,7 @@ const serviceConfigs = [
     key: 'ads',
     name: '广告过滤',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Advertising.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Advertising.png',
     // 这里直接指向 REJECT，不再用「广告过滤」策略组
     rules: [
       'GEOSITE,category-ads-all,REJECT',
@@ -380,28 +380,28 @@ const serviceConfigs = [
     key: 'apple',
     name: '苹果服务',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple_2.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Apple_2.png',
     rules: ['GEOSITE,apple-cn,苹果服务']
   },
   {
     key: 'google',
     name: '谷歌服务',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Google_Search.png',
     rules: ['GEOSITE,google,谷歌服务']
   },
   {
     key: 'github',
     name: 'Github',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/GitHub.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/GitHub.png',
     rules: ['GEOSITE,github,Github']
   },
   {
     key: 'microsoft',
     name: '微软服务',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Microsoft.png',
     rules: [
       'GEOSITE,microsoft@cn,DIRECT',       // 国内微软直连
       'GEOSITE,microsoft,微软服务'          // 其他微软走策略组
@@ -411,7 +411,7 @@ const serviceConfigs = [
     key: 'japan',
     name: '日本网站',
     icon:
-      'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/JP.png',
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Japan.png',
     rules: [
       'RULE-SET,category-bank-jp,日本网站',
       'GEOIP,jp,日本网站,no-resolve'
@@ -527,7 +527,7 @@ function main(config) {
       type: 'select',
       proxies: otherProxies,
       icon:
-        'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/World_Map.png'
+        'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/World_Map.png'
     });
   }
 
@@ -544,7 +544,7 @@ function main(config) {
       ...(otherProxies.length ? ['其他节点'] : [])
     ],
     icon:
-      'https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Final.png'
+      'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Final.png'
   });
 
   // 5.2 各服务策略组 + 规则 / rule-providers

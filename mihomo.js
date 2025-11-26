@@ -597,8 +597,7 @@ function main(config) {
   rules.push(
     // - 1password.com 走 漏网之鱼
     `DOMAIN-SUFFIX,1password.com,${DEFAULT_GROUP_NAME}`,
-    // - kuxueyun.com 直连
-    'DOMAIN-SUFFIX,kuxueyun.com,DIRECT'
+
   );
 
   // 7. 兜底规则：

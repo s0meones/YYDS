@@ -595,9 +595,6 @@ function main(config) {
 
   // 6. 自定义规则区（你想单独指定的走向都写在这里）
   rules.push(
-    // 你示例里的三条：
-    // - IP 段 154.19.43.33/24 走 漏网之鱼
-    `IP-CIDR,154.19.43.33/24,${DEFAULT_GROUP_NAME}`,
     // - 1password.com 走 漏网之鱼
     `DOMAIN-SUFFIX,1password.com,${DEFAULT_GROUP_NAME}`,
     // - kuxueyun.com 直连

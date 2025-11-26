@@ -40,67 +40,67 @@ const regionDefinitions = [
   {
     name: 'HK香港',
     regex: /港|🇭🇰|hk|hongkong|hong kong/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Hong_Kong.png'
   },
   {
     name: 'US美国',
     regex: /(?!.*aus)(?=.*(美|🇺🇸|us(?!t)|usa|american|united states)).*/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/United_States.png'
   },
   {
     name: 'JP日本',
     regex: /日本|🇯🇵|jp|japan/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Japan.png'
   },
   {
     name: 'KR韩国',
     regex: /韩|🇰🇷|kr|korea/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Korea.png'
   },
   {
     name: 'SG新加坡',
     regex: /新加坡|🇸🇬|sg|singapore/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Singapore.png'
   },
   {
     name: 'CN中国大陆',
     regex: /中国|🇨🇳|cn|china/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/China_Map.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/China_Map.png'
   },
   {
-    name: 'TW台湾省',
+    name: 'TW台湾',
     regex: /台湾|🇹🇼|tw|taiwan|tai wan/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/China.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Taiwan.png'
   },
   {
     name: 'GB英国',
     regex: /英|🇬🇧|uk|united kingdom|great britain/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_Kingdom.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/United_Kingdom.png'
   },
   {
     name: 'DE德国',
     regex: /德国|🇩🇪|de|germany/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Germany.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Germany.png'
   },
   {
     name: 'MY马来西亚',
     regex: /马来|🇲🇾|my|malaysia/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Malaysia.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Malaysia.png'
   },
   {
     name: 'TK土耳其',
     regex: /土耳其|🇹🇷|tk|turkey/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Turkey.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Turkey.png'
   },
   {
     name: 'CA加拿大',
     regex: /加拿大|🇨🇦|ca|canada/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Canada.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Canada.png'
   },
   {
     name: 'AU澳大利亚',
     regex: /澳大利亚|🇦🇺|au|australia|sydney/i,
-    icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Australia.png'
+    icon: 'https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Australia.png'
   }
 ];
 
@@ -597,7 +597,8 @@ function main(config) {
   rules.push(
     // - 1password.com 走 漏网之鱼
     `DOMAIN-SUFFIX,1password.com,${DEFAULT_GROUP_NAME}`,
-
+    // - kuxueyun.com 直连
+    'DOMAIN-SUFFIX,kuxueyun.com,DIRECT'
   );
 
   // 7. 兜底规则：

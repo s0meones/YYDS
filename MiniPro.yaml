@@ -77,35 +77,35 @@ proxy-groups:
     include-all: true
     type: select
     exclude-type: direct
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Final.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Final.png"
   
   - name: YouTube
     type: select
     proxies: [香港,美国]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/YouTube.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/YouTube.png"
 
   - name: AI
     type: select
     include-all: true
     filter: "(?i)美|us|hk_ix"
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/ChatGPT.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/ChatGPT.png"
 
   - name: Telegram
     type: select
     proxies: [香港,美国]
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Telegram.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Telegram.png"
 
   - name: NETFLIX
     include-all: true
     type: select
     filter: "(?i)美|us|sg"
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Netflix.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Netflix.png"
 
   - name: Speedtest
     include-all: true
     type: select
     exclude-type: direct
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Speedtest.png"  
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Speedtest.png"  
 
   - name: 香港
     type: fallback
@@ -113,14 +113,14 @@ proxy-groups:
     exclude-type: direct
     tolerance: 10
     filter: "(?i)港|hk|hongkong|hong kong"
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/Hong_Kong.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/Hong_Kong.png"
 
   - name: 美国
     type: select
     include-all: true
     exclude-type: direct
     filter: "(?i)美|us|unitedstates|united states"
-    icon: "https://raw.githubusercontent.com/s0meones/Qure/master/IconSet/Color/United_States.png"
+    icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/United_States.png"
 
 rules:
   - DOMAIN-SUFFIX,1password.com,Final漏网之鱼

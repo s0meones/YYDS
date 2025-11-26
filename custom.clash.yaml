@@ -119,8 +119,6 @@ proxy-groups:
     icon: "https://raw.githubusercontent.com/s0meones/YYDS/main/Icon/United_States.png"
 
 rules:
-  - IP-CIDR,15.204.57.0,Final漏网之鱼
-  - IP-CIDR,154.19.43.0/24,Final漏网之鱼
   - DOMAIN-SUFFIX,1password.com,Final漏网之鱼
   - RULE-SET,private_domain,DIRECT
   - RULE-SET,ai,AI
@@ -182,3 +180,4 @@ rule-providers:
   telegram_ip:
     <<: *ip
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"
+

@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "rules": [
+    {
+      "domain_suffix": [
+        "emby.heisi.org",
+        "emby666.alien666.de5.net",
+        "qzz.io",
+        "023168.xyz",
+        "emby.bangumi.ca",
+        "xmsl.org",
+        "cf.imetyou.top",
+        "tanhuatv.site"
+      ]
+    }
+  ]
+}

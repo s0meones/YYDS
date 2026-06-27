@@ -127,6 +127,11 @@
         "^xbox\\.[^.]+\\.[^.]+\\.microsoft\\.com$",
         "^xbox\\.[^.]+\\.microsoft\\.com$"
       ]
+    },
+    {
+      "domain_keyword": [
+        "stun"
+      ]
     }
   ]
 }

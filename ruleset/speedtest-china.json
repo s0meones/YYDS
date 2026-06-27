@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "rules": [
+    {
+      "domain": [
+        "4gsuzhou1.speedtest.jsinfo.net.prod.hosts.ooklaserver.net",
+        "5gzhenjiang.speedtest.jsinfo.net.prod.hosts.ooklaserver.net",
+        "mobile.shunicomtest.com.prod.hosts.ooklaserver.net",
+        "cesu-hz.zjtelecom.com.cn",
+        "cesu-nb.zjtelecom.com.cn",
+        "speedtest1.online.sh.cn",
+        "4gsuzhou1.speedtest.jsinfo.net",
+        "5gzhenjiang.speedtest.jsinfo.net",
+        "speedtest.jsqiuying.com",
+        "mobile.shunicomtest.com",
+        "beijing.unicomtest.com"
+      ]
+    }
+  ]
+}

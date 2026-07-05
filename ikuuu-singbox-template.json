@@ -1,0 +1,620 @@
+{
+  "log": {
+    "level": "error"
+  },
+  "ntp": {
+    "enabled": true,
+    "server": "ntp.aliyun.com",
+    "detour": "DIRECT"
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "dns-local",
+        "type": "https",
+        "detour": "DIRECT",
+        "server": "223.5.5.5",
+        "tls": {
+          "server_name": "dns.alidns.com"
+        }
+      },
+      {
+        "tag": "dns-proxy",
+        "type": "https",
+        "detour": "PROXY",
+        "server": "1.1.1.1",
+        "tls": {
+          "server_name": "cloudflare-dns.com"
+        }
+      },
+      {
+        "tag": "dns-ikuuu-private",
+        "type": "https",
+        "detour": "DIRECT",
+        "server": "IKUUU_DOT_HOST_REPLACE_ME",
+        "server_port": 443,
+        "path": "/dns-query"
+      },
+      {
+        "tag": "dns-fakeip",
+        "type": "fakeip",
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    ],
+    "rules": [
+      {
+        "query_type": [
+          "HTTPS",
+          "SVCB"
+        ],
+        "action": "predefined"
+      },
+      {
+        "query_type": "AAAA",
+        "action": "predefined"
+      },
+      {
+        "domain": [
+          "cpa.loocc.com",
+          "sub-store.loocc.com"
+        ],
+        "server": "dns-local"
+      },
+      {
+        "domain_regex": "IKUUU_DOT_MATCH_REPLACE_ME",
+        "server": "dns-ikuuu-private"
+      },
+      {
+        "rule_set": "geosite-ads",
+        "action": "reject"
+      },
+      {
+        "rule_set": "fakeip-filter",
+        "server": "dns-local"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "server": "dns-local"
+      },
+      {
+        "domain_keyword": "stun",
+        "server": "dns-local"
+      },
+      {
+        "domain_suffix": "telegram.org",
+        "server": "dns-proxy"
+      },
+      {
+        "rule_set": "geolocation-!cn",
+        "invert": true,
+        "action": "evaluate",
+        "server": "dns-local"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "match_response": true
+          },
+          {
+            "match_response": true,
+            "ip_accept_any": true,
+            "invert": true
+          }
+        ],
+        "action": "respond"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "match_response": true,
+        "action": "respond"
+      },
+      {
+        "query_type": "A",
+        "server": "dns-fakeip",
+        "rewrite_ttl": 60
+      }
+    ],
+    "final": "dns-proxy",
+    "reverse_mapping": true,
+    "strategy": "prefer_ipv4",
+    "timeout": "4s",
+    "cache_capacity": 1024,
+    "optimistic": {
+      "enabled": true,
+      "timeout": "1h0m0s"
+    }
+  },
+  "http_clients": [
+    {
+      "tag": "rule-download",
+      "detour": "PROXY"
+    }
+  ],
+  "endpoints": [
+    {
+      "tag": "ts-ep",
+      "type": "tailscale",
+      "detour": "PROXY",
+      "state_directory": "ts-state",
+      "hostname": "iPhone",
+      "accept_routes": true,
+      "udp_timeout": "30s"
+    }
+  ],
+  "inbounds": [
+    {
+      "tag": "tun-in",
+      "type": "tun",
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
+      "dns_mode": "hijack",
+      "auto_route": true,
+      "udp_timeout": "30s",
+      "stack": "gvisor"
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "PROXY",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "GLOBAL",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "YOUTUBE",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "AI",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "META",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "EMBY",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "TIKTOK",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "SPEEDTEST",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "HK",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "TW",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "SG",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "US",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "JP",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "DE",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "OTHERS",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "DIRECT",
+      "type": "direct",
+      "connect_timeout": "2s"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "ip_cidr": "100.64.0.0/10",
+        "outbound": "ts-ep"
+      },
+      {
+        "port": 53,
+        "action": "hijack-dns"
+      },
+      {
+        "action": "sniff"
+      },
+      {
+        "port": 853,
+        "action": "reject"
+      },
+      {
+        "rule_set": "doh-block",
+        "port": 443,
+        "action": "reject"
+      },
+      {
+        "ip_cidr": [
+          "127.0.0.0/8",
+          "::1/128"
+        ],
+        "outbound": "DIRECT"
+      },
+      {
+        "network": "icmp",
+        "action": "reject",
+        "method": "drop"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "DIRECT"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "GLOBAL"
+      },
+      {
+        "domain": [
+          "cpa.loocc.com",
+          "sub-store.loocc.com"
+        ],
+        "outbound": "DIRECT"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "DIRECT"
+      },
+      {
+        "ip_cidr": "2000::/3",
+        "action": "reject"
+      },
+      {
+        "rule_set": "polluted-ip",
+        "action": "reject",
+        "method": "drop"
+      },
+      {
+        "rule_set": "geosite-ads",
+        "action": "reject",
+        "method": "drop"
+      },
+      {
+        "rule_set": "httpdns-block",
+        "action": "reject",
+        "method": "drop"
+      },
+      {
+        "domain": [
+          "challenges.cloudflare.com",
+          "stun.cloudflare.com"
+        ],
+        "outbound": "TW"
+      },
+      {
+        "domain_suffix": "bgp.tools",
+        "outbound": "TW"
+      },
+      {
+        "rule_set": "speedtest-international",
+        "outbound": "SPEEDTEST"
+      },
+      {
+        "rule_set": "geosite-tiktok",
+        "outbound": "TIKTOK"
+      },
+      {
+        "domain": "token.safebrowsing.apple",
+        "action": "reject"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "DIRECT"
+      },
+      {
+        "rule_set": "geosite-ai",
+        "outbound": "AI"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "TW"
+      },
+      {
+        "rule_set": "geosite-meta",
+        "outbound": "META"
+      },
+      {
+        "rule_set": "emby",
+        "outbound": "EMBY"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "YOUTUBE"
+      },
+      {
+        "rule_set": "telegram-dc5",
+        "outbound": "SG"
+      },
+      {
+        "rule_set": "telegram-dc13",
+        "outbound": "US"
+      },
+      {
+        "rule_set": "telegram-dc24",
+        "outbound": "DE"
+      },
+      {
+        "rule_set": "geosite-google",
+        "outbound": "PROXY"
+      },
+      {
+        "domain_suffix": "iplark.com",
+        "outbound": "PROXY"
+      },
+      {
+        "network": "udp",
+        "port": 443,
+        "rule_set": [
+          "geosite-cn",
+          "geolocation-cn"
+        ],
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "geosite-cn",
+          "geolocation-cn"
+        ],
+        "outbound": "DIRECT"
+      },
+      {
+        "domain_suffix": [
+          "hysteria.network"
+        ],
+        "outbound": "PROXY"
+      },
+      {
+        "rule_set": "geolocation-!cn",
+        "outbound": "PROXY"
+      },
+      {
+        "ip_cidr": [
+          "198.18.0.0/15",
+          "fc00::/18"
+        ],
+        "outbound": "PROXY"
+      },
+      {
+        "action": "resolve",
+        "server": "dns-local",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "network": "udp",
+        "port": 443,
+        "rule_set": "geoip-cn",
+        "action": "reject"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "DIRECT"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geolocation-cn",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geolocation-!cn",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-ads",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "speedtest-international",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/speedtest-international.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-apple",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-apple.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-google",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-youtube",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-tiktok",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-tiktok.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-netflix",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-ai",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ai-!cn.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "geosite-meta",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-meta.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "polluted-ip",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/polluted-ip.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "telegram-dc13",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc13.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "telegram-dc24",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc24.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "telegram-dc5",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc5.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "emby",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/emby.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "httpdns-block",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/httpdns-block.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "fakeip-filter",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/fakeip-filter.srs",
+        "http_client": "rule-download"
+      },
+      {
+        "tag": "doh-block",
+        "type": "remote",
+        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/doh-block.srs",
+        "http_client": "rule-download"
+      }
+    ],
+    "final": "PROXY",
+    "auto_detect_interface": true,
+    "default_network_strategy": "fallback",
+    "default_network_type": [
+      "wifi"
+    ],
+    "default_fallback_network_type": [
+      "cellular"
+    ],
+    "default_domain_resolver": "dns-local"
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    }
+  }
+}

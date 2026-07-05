@@ -181,18 +181,18 @@ function fillPolicyGroups(config, proxies, landingProxies) {
   );
   const others = tags(proxies, undefined).filter((tag) => !namedRegex.test(tag));
 
+  // 只要某个地区生成了 <地区>-RELAY 分组(说明这个地区有链式落地节点), 所有引用该地区的策略组
+  // 都统一用 <地区>-RELAY 代替原始机场分组, 不再同时显示"原始"和"链式"两个重复选项。
+  // 没有链式节点的地区不受影响, 还是引用原始机场分组。
+  const regionOrRelay = (region) => relayGroupTagByRegion[region] || region;
+
   // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),
   // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
   const groups = {
-    PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
-    // EMBY: 除 HK 外, 其它地区只要有链式落地节点就用 <地区>-RELAY 代替原始分组,
-    // 不再同时显示"没套链式的原始分组"和"链式分组"两个重复选项;
-    // 没有链式节点的地区还是显示原始分组; HK 固定用原始分组, 不接入 HK 链式代理(维持之前的规则)
-    EMBY: ['HK', 'SG', 'JP', 'US', 'TW']
-      .map((region) => (region === 'HK' ? 'HK' : relayGroupTagByRegion[region] || region))
-      .concat(['OTHERS']),
-    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'],
-    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
+    PROXY: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
+    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['DE', 'OTHERS']),
+    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
     HK: fallback(hk, allOrDirect),
     TW: fallback(tw, allOrDirect),
     SG: fallback(sg, allOrDirect),
@@ -200,10 +200,10 @@ function fillPolicyGroups(config, proxies, landingProxies) {
     JP: fallback(jp, allOrDirect),
     DE: fallback(de, allOrDirect),
     OTHERS: fallback(others, allOrDirect),
-    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP'],
-    AI: ['TW', 'US', 'SG', 'JP'],
-    META: ['TW', 'US', 'SG', 'JP'],
-    TIKTOK: ['TW', 'SG', 'US', 'JP'],
+    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP'].map(regionOrRelay),
+    AI: ['TW', 'US', 'SG', 'JP'].map(regionOrRelay),
+    META: ['TW', 'US', 'SG', 'JP'].map(regionOrRelay),
+    TIKTOK: ['TW', 'SG', 'US', 'JP'].map(regionOrRelay),
   };
   // HK/TW/SG/US/JP 用 urltest 自动测速切换, 其余分组维持手动 selector
   const urltestTags = new Set(['HK', 'TW', 'SG', 'US', 'JP']);

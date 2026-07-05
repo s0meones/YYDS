@@ -46,8 +46,9 @@ const REGION_PATTERNS = {
   JP: /日|日本|jp|japan/i,
   DE: /德|德国|德國|de|germany/i,
 };
-// 落地节点链式代理只对这三个地区生效(跟主人这次的需求范围一致)
-const CHAIN_REGIONS = ['HK', 'TW', 'US'];
+// 落地节点链式代理支持的地区 = 机场那五个 urltest 入口分组, 不写死具体是哪几个地区,
+// 落地订阅里以后加了新地区的节点(比如 SG/JP), 会自动识别、自动生成对应的链式分组, 不用改脚本
+const CHAIN_REGIONS = ['HK', 'TW', 'SG', 'US', 'JP'];
 
 const config = (ProxyUtils.JSON5 || JSON).parse($content || $files[0]);
 
@@ -149,8 +150,24 @@ function replaceGeneratedOutbounds(config, proxies) {
 function fillPolicyGroups(config, proxies, landingProxies) {
   const all = tags(proxies);
   const allOrDirect = all.length ? all : ['DIRECT'];
-  // EMBY 要排除自己的 HK 落地节点(detour 已经打上 'HK' 的那些), 其余落地节点(TW/US/匹配不到地区的)都放进去
-  const landingTagsNonHk = tags((landingProxies || []).filter((proxy) => proxy.detour !== 'HK'));
+
+  // 动态生成链式代理专用分组: 只对"真的有落地节点"的地区生成对应的 <地区>-RELAY 分组,
+  // 分组里只装该地区套了链式的落地节点, 不跟机场分组/其它地区的落地节点混在一起。
+  // 以后落地订阅里加了新地区的节点(比如 SG/JP), 不用改脚本, 会自动多出一个对应的 RELAY 分组。
+  const relayGroupTagByRegion = {};
+  for (const region of CHAIN_REGIONS) {
+    const relayTags = tags((landingProxies || []).filter((proxy) => proxy.detour === region));
+    if (relayTags.length === 0) continue;
+    const relayTag = region + '-RELAY';
+    relayGroupTagByRegion[region] = relayTag;
+    config.outbounds.push({
+      tag: relayTag,
+      type: 'selector',
+      outbounds: relayTags,
+      interrupt_exist_connections: true,
+    });
+  }
+
   const hk = tags(proxies, REGION_PATTERNS.HK);
   const tw = tags(proxies, REGION_PATTERNS.TW);
   const sg = tags(proxies, REGION_PATTERNS.SG);
@@ -168,7 +185,12 @@ function fillPolicyGroups(config, proxies, landingProxies) {
   // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
   const groups = {
     PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
-    EMBY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'].concat(landingTagsNonHk),
+    // EMBY: 除 HK 外, 其它地区只要有链式落地节点就用 <地区>-RELAY 代替原始分组,
+    // 不再同时显示"没套链式的原始分组"和"链式分组"两个重复选项;
+    // 没有链式节点的地区还是显示原始分组; HK 固定用原始分组, 不接入 HK 链式代理(维持之前的规则)
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW']
+      .map((region) => (region === 'HK' ? 'HK' : relayGroupTagByRegion[region] || region))
+      .concat(['OTHERS']),
     GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'],
     SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
     HK: fallback(hk, allOrDirect),

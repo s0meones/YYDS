@@ -1,38 +1,21 @@
-// Sub-Store script operation: 用 ikuuu 订阅动态生成官方 sing-box 配置。
+// Sub-Store script operation: 用订阅动态生成 sing-box 配置(通用模板, 不绑定具体机场)。
 // 用法:
 //   sing-box.js#type=0&name=ikuuu
 // type=0 单条订阅 / type=1(或 col/collection) 组合订阅, name 为该订阅/组合在 Sub-Store 里的"名称"(不是显示名称)。
-//
-// 私有解析说明:
-// ikuuu 订阅 YAML 里带了这一段(仅对 *.v51124-6.qpon 这类 IEPL 专线域名生效):
-//   x-client-custom:
-//     nameserver-policy:
-//       "+.v51124-6.qpon":
-//         - "https://<hash>.9fe06a.fyi/dns-query"
-//         - "tcp://<hash>.9fe06a.fyi:54#cost-bias=+100ms"
-// 这是节点侧的私有 DoH(不是标准 853 DoT),官方 sing-box 不认识 clash 的 nameserver-policy 字段,
-// 所以这里改用 sing-box 原生的 outbound.domain_resolver 机制,只对匹配 dot_match 的节点单独指定解析服务器,
-// 其余节点(下载专用 .quest / 免费 .art)保持走默认解析(dns-local),不受影响。
-// 如果 ikuuu 之后更换了这段私有解析域名或专线分组编号,直接改下面的链接参数即可,不用改脚本:
-//   #type=0&name=ikuuu&dot_host=新的hash.9fe06a.fyi&dot_match=\\.新分组\\.qpon$
+// 换成别的机场只需要把 name 换成对应订阅的名称, 脚本本身不写死任何机场专属逻辑。
 //
 // 自建落地节点链式代理(可选功能):
 // 如果在 Sub-Store 里也把自己的自建节点做成了一条订阅/组合, 加上 landing_name 参数即可自动接入:
 //   #type=0&name=ikuuu&landing_name=你的落地订阅名称&landing_type=0
-// 落地订阅里的节点按名字匹配港/hk、台/tw、美/us(和机场节点用的是同一套地区正则),
-// 匹配到的落地节点会被自动加上 detour 指向对应的机场 urltest 分组(HK/TW/US),
+// 落地订阅里的节点按名字匹配港/hk、台/tw、新/sg、美/us、日/jp,
+// 匹配到的落地节点会被自动加上 detour 指向对应的机场 urltest 分组(HK/TW/SG/US/JP),
 // 实现"机场入口(自动测速选优)+ 自建落地"的链式代理, 不需要手动写死任何节点信息。
-// 不传 landing_name 就完全不启用这个功能, 跟以前一样。
+// 不传 landing_name 就完全不启用这个功能。
 
 const args = $arguments || {};
 const {
   type = '0',
   name = 'ikuuu',
-  dot_host = 'd9eaaedc3c1e59d1dab6bc462a24475df36fd26a.9fe06a.fyi',
-  dot_path = '/dns-query',
-  dot_port = '443',
-  dot_detour = 'DIRECT',
-  dot_match = '\\.qpon$',
   landing_name = '',
   landing_type = '0',
 } = args;
@@ -59,12 +42,8 @@ const airportProxiesRaw = await produceArtifact({
   produceType: 'internal',
 });
 
-const dotRegex = dot_host && dot_match ? new RegExp(dot_match, 'i') : null;
-
 const normalizedAirportProxies = sortFreeLast(
-  uniqueByTag(airportProxiesRaw)
-    .filter((proxy) => proxy && proxy.tag && !/warp|wrap|cloudflare/i.test(proxy.tag))
-    .map((proxy) => withPrivateResolver(proxy))
+  uniqueByTag(airportProxiesRaw).filter((proxy) => proxy && proxy.tag && !/warp|wrap|cloudflare/i.test(proxy.tag))
 );
 
 let normalizedLandingProxies = [];
@@ -86,7 +65,6 @@ if (landing_name) {
 // 机场节点优先, 落地节点如果 tag 撞车了会被自动去重(保留机场那边的)
 const allProxies = uniqueByTag(normalizedAirportProxies.concat(normalizedLandingProxies));
 
-applyPrivateResolver(config);
 replaceGeneratedOutbounds(config, allProxies);
 fillPolicyGroups(config, normalizedAirportProxies, normalizedLandingProxies);
 
@@ -97,48 +75,6 @@ function matchChainRegion(tag) {
     if (REGION_PATTERNS[region].test(tag)) return region;
   }
   return null;
-}
-
-function applyPrivateResolver(config) {
-  const servers = config && config.dns && config.dns.servers;
-  const rules = config && config.dns && config.dns.rules;
-
-  if (Array.isArray(servers)) {
-    const index = servers.findIndex((s) => s && s.tag === 'dns-ikuuu-private');
-    if (!dot_host) {
-      if (index >= 0) servers.splice(index, 1);
-    } else {
-      const server = {
-        tag: 'dns-ikuuu-private',
-        type: 'https',
-        detour: dot_detour || 'DIRECT',
-        server: dot_host,
-        server_port: Number(dot_port) || 443,
-        path: dot_path || '/dns-query',
-      };
-      if (index >= 0) servers[index] = server;
-      else servers.push(server);
-    }
-  }
-
-  if (Array.isArray(rules)) {
-    const rIndex = rules.findIndex(
-      (r) => r && (r.server === 'dns-ikuuu-private' || r.domain_regex === 'IKUUU_DOT_MATCH_REPLACE_ME')
-    );
-    if (!dot_host || !dot_match) {
-      if (rIndex >= 0) rules.splice(rIndex, 1);
-    } else if (rIndex >= 0) {
-      rules[rIndex] = { domain_regex: dot_match, server: 'dns-ikuuu-private' };
-    }
-  }
-}
-
-function withPrivateResolver(proxy) {
-  const next = Object.assign({}, proxy);
-  if (dotRegex && typeof next.server === 'string' && dotRegex.test(next.server)) {
-    next.domain_resolver = 'dns-ikuuu-private';
-  }
-  return next;
 }
 
 function replaceGeneratedOutbounds(config, proxies) {
@@ -183,7 +119,7 @@ function fillPolicyGroups(config, proxies, landingProxies) {
 
   // 只要某个地区生成了 <地区>-RELAY 分组(说明这个地区有链式落地节点), 所有引用该地区的策略组
   // 都统一用 <地区>-RELAY 代替原始机场分组, 不再同时显示"原始"和"链式"两个重复选项。
-  // 没有链式节点的地区不受影响, 还是引用原始机场分组。
+  // 没有链式节点的地区不受影响, 还是引用原始机场分组(不会出现空分组)。
   const regionOrRelay = (region) => relayGroupTagByRegion[region] || region;
 
   // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),

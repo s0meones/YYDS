@@ -99,6 +99,7 @@ function replaceGeneratedOutbounds(config, proxies) {
 
 function fillPolicyGroups(config, proxies) {
   const all = tags(proxies);
+  const allOrDirect = all.length ? all : ['DIRECT'];
   const hk = tags(proxies, /港|香港|hk|hong\s*kong/i);
   const tw = tags(proxies, /台|台湾|臺|tw|taiwan/i);
   const sg = tags(proxies, /新|狮城|獅城|sg|singapore/i);
@@ -109,27 +110,31 @@ function fillPolicyGroups(config, proxies) {
   const namedRegex = /港|香港|hk|hong\s*kong|台|台湾|臺|tw|taiwan|新|狮城|獅城|sg|singapore|美|美国|美國|us|usa|united\s*states|america|日|日本|jp|japan/i;
   const others = tags(proxies, undefined).filter((tag) => !namedRegex.test(tag));
 
+  // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),
+  // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
   const groups = {
-    PROXY: fallback(all, ['DIRECT']),
-    GLOBAL: fallback(all, ['PROXY']),
-    SPEEDTEST: fallback(all, ['PROXY']),
-    EMBY: fallback(all, ['PROXY']),
-    HK: fallback(hk, ['PROXY']),
-    TW: fallback(tw, ['PROXY']),
-    SG: fallback(sg, ['PROXY']),
-    US: fallback(us, ['PROXY']),
-    JP: fallback(jp, ['PROXY']),
-    DE: fallback(de, ['PROXY']),
-    OTHERS: fallback(others, ['PROXY']),
+    PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
+    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'].concat(all),
+    SPEEDTEST: allOrDirect,
+    HK: fallback(hk, allOrDirect),
+    TW: fallback(tw, allOrDirect),
+    SG: fallback(sg, allOrDirect),
+    US: fallback(us, allOrDirect),
+    JP: fallback(jp, allOrDirect),
+    DE: fallback(de, allOrDirect),
+    OTHERS: fallback(others, allOrDirect),
     YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP', 'PROXY'],
     AI: ['TW', 'US', 'SG', 'JP', 'PROXY'],
     META: ['TW', 'US', 'SG', 'JP', 'PROXY'],
     TIKTOK: ['TW', 'SG', 'US', 'JP', 'PROXY'],
   };
+  // HK/TW/SG/US/JP 用 urltest 自动测速切换, 其余分组维持手动 selector
+  const urltestTags = new Set(['HK', 'TW', 'SG', 'US', 'JP']);
 
   for (const outbound of config.outbounds || []) {
     if (outbound && Object.prototype.hasOwnProperty.call(groups, outbound.tag)) {
-      outbound.type = 'selector';
+      outbound.type = urltestTags.has(outbound.tag) ? 'urltest' : 'selector';
       outbound.outbounds = groups[outbound.tag];
       outbound.interrupt_exist_connections = true;
     }

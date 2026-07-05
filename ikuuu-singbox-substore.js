@@ -33,6 +33,15 @@ const REGION_PATTERNS = {
 // 落地订阅里以后加了新地区的节点(比如 SG/JP), 会自动识别、自动生成对应的链式分组, 不用改脚本
 const CHAIN_REGIONS = ['HK', 'TW', 'SG', 'US', 'JP'];
 
+// 这些 tag 是脚本自己要用的分组名, 订阅里如果凑巧有节点也叫这些名字(尤其 HK/TW/SG/US/JP 这种两三个字母的),
+// 会跟分组本身撞 tag, 导致分组被节点"顶掉"(sing-box/客户端按 tag 去重时以后出现的为准), 表现为分组整个消失。
+// 撞了就自动改名, 避免这个坑。
+const RESERVED_TAGS = new Set(['PROXY', 'GLOBAL', 'YOUTUBE', 'AI', 'META', 'EMBY', 'TIKTOK', 'SPEEDTEST', 'HK', 'TW', 'SG', 'US', 'JP', 'DE', 'OTHERS', 'DIRECT']);
+function avoidReservedTag(proxy) {
+  if (!proxy || !RESERVED_TAGS.has(proxy.tag)) return proxy;
+  return Object.assign({}, proxy, { tag: proxy.tag + ' (节点)' });
+}
+
 const config = (ProxyUtils.JSON5 || JSON).parse($content || $files[0]);
 
 const airportProxiesRaw = await produceArtifact({
@@ -43,7 +52,9 @@ const airportProxiesRaw = await produceArtifact({
 });
 
 const normalizedAirportProxies = sortFreeLast(
-  uniqueByTag(airportProxiesRaw).filter((proxy) => proxy && proxy.tag && !/warp|wrap|cloudflare/i.test(proxy.tag))
+  uniqueByTag(airportProxiesRaw)
+    .filter((proxy) => proxy && proxy.tag && !/warp|wrap|cloudflare/i.test(proxy.tag))
+    .map(avoidReservedTag)
 );
 
 let normalizedLandingProxies = [];
@@ -56,6 +67,7 @@ if (landing_name) {
   });
   normalizedLandingProxies = uniqueByTag(landingProxiesRaw)
     .filter((proxy) => proxy && proxy.tag)
+    .map(avoidReservedTag)
     .map((proxy) => {
       const region = matchChainRegion(proxy.tag);
       return region ? Object.assign({}, proxy, { detour: region }) : proxy;

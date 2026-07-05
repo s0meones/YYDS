@@ -149,7 +149,8 @@ function replaceGeneratedOutbounds(config, proxies) {
 function fillPolicyGroups(config, proxies, landingProxies) {
   const all = tags(proxies);
   const allOrDirect = all.length ? all : ['DIRECT'];
-  const landingTags = tags(landingProxies || []);
+  // EMBY 要排除自己的 HK 落地节点(detour 已经打上 'HK' 的那些), 其余落地节点(TW/US/匹配不到地区的)都放进去
+  const landingTagsNonHk = tags((landingProxies || []).filter((proxy) => proxy.detour !== 'HK'));
   const hk = tags(proxies, REGION_PATTERNS.HK);
   const tw = tags(proxies, REGION_PATTERNS.TW);
   const sg = tags(proxies, REGION_PATTERNS.SG);
@@ -166,10 +167,10 @@ function fillPolicyGroups(config, proxies, landingProxies) {
   // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),
   // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
   const groups = {
-    PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'].concat(landingTags),
-    EMBY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'].concat(landingTags),
-    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'].concat(landingTags),
-    SPEEDTEST: allOrDirect.concat(landingTags),
+    PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'].concat(landingTagsNonHk),
+    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'],
+    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
     HK: fallback(hk, allOrDirect),
     TW: fallback(tw, allOrDirect),
     SG: fallback(sg, allOrDirect),
@@ -177,10 +178,10 @@ function fillPolicyGroups(config, proxies, landingProxies) {
     JP: fallback(jp, allOrDirect),
     DE: fallback(de, allOrDirect),
     OTHERS: fallback(others, allOrDirect),
-    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP', 'PROXY'],
-    AI: ['TW', 'US', 'SG', 'JP', 'PROXY'],
-    META: ['TW', 'US', 'SG', 'JP', 'PROXY'],
-    TIKTOK: ['TW', 'SG', 'US', 'JP', 'PROXY'],
+    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP'],
+    AI: ['TW', 'US', 'SG', 'JP'],
+    META: ['TW', 'US', 'SG', 'JP'],
+    TIKTOK: ['TW', 'SG', 'US', 'JP'],
   };
   // HK/TW/SG/US/JP 用 urltest 自动测速切换, 其余分组维持手动 selector
   const urltestTags = new Set(['HK', 'TW', 'SG', 'US', 'JP']);

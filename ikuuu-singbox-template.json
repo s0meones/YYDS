@@ -225,7 +225,7 @@
     },
     {
       "tag": "HK",
-      "type": "selector",
+      "type": "urltest",
       "outbounds": [
         "DIRECT"
       ],
@@ -233,7 +233,7 @@
     },
     {
       "tag": "TW",
-      "type": "selector",
+      "type": "urltest",
       "outbounds": [
         "DIRECT"
       ],
@@ -241,7 +241,7 @@
     },
     {
       "tag": "SG",
-      "type": "selector",
+      "type": "urltest",
       "outbounds": [
         "DIRECT"
       ],
@@ -249,7 +249,7 @@
     },
     {
       "tag": "US",
-      "type": "selector",
+      "type": "urltest",
       "outbounds": [
         "DIRECT"
       ],
@@ -257,7 +257,7 @@
     },
     {
       "tag": "JP",
-      "type": "selector",
+      "type": "urltest",
       "outbounds": [
         "DIRECT"
       ],

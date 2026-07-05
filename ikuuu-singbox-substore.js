@@ -115,7 +115,7 @@ function fillPolicyGroups(config, proxies) {
   const groups = {
     PROXY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
     EMBY: ['HK', 'SG', 'JP', 'US', 'TW', 'OTHERS'],
-    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'].concat(all),
+    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW', 'DE', 'OTHERS'],
     SPEEDTEST: allOrDirect,
     HK: fallback(hk, allOrDirect),
     TW: fallback(tw, allOrDirect),

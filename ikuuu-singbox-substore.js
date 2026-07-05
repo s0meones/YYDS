@@ -98,7 +98,7 @@ function fillPolicyGroups(config, proxies, landingProxies) {
     relayGroupTagByRegion[region] = relayTag;
     config.outbounds.push({
       tag: relayTag,
-      type: 'selector',
+      type: 'urltest',
       outbounds: relayTags,
       interrupt_exist_connections: true,
     });

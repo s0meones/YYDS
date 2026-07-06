@@ -156,14 +156,6 @@
       "interrupt_exist_connections": true
     },
     {
-      "tag": "GLOBAL",
-      "type": "selector",
-      "outbounds": [
-        "DIRECT"
-      ],
-      "interrupt_exist_connections": true
-    },
-    {
       "tag": "YOUTUBE",
       "type": "selector",
       "outbounds": [
@@ -261,6 +253,14 @@
     },
     {
       "tag": "OTHERS",
+      "type": "selector",
+      "outbounds": [
+        "DIRECT"
+      ],
+      "interrupt_exist_connections": true
+    },
+    {
+      "tag": "GLOBAL",
       "type": "selector",
       "outbounds": [
         "DIRECT"

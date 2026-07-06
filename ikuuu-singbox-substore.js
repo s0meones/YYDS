@@ -99,21 +99,12 @@ function fillPolicyGroups(config, proxies, landingProxies) {
   const all = tags(proxies);
   const allOrDirect = all.length ? all : ['DIRECT'];
 
-  // 动态生成链式代理专用分组: 只对"真的有落地节点"的地区生成对应的 <地区>-RELAY 分组,
-  // 分组里只装该地区套了链式的落地节点, 不跟机场分组/其它地区的落地节点混在一起。
-  // 以后落地订阅里加了新地区的节点(比如 SG/JP), 不用改脚本, 会自动多出一个对应的 RELAY 分组。
-  const relayGroupTagByRegion = {};
+  // 链式代理不再套一层"<地区>-RELAY"分组, 改成直接把套了链式的落地节点(leaf 节点, 自己带 detour)
+  // 摆进策略组里, 少一层"分组套分组"的嵌套。节点本身的 detour 字段还是指向机场入口分组不变。
+  const chainTagsByRegion = {};
   for (const region of CHAIN_REGIONS) {
-    const relayTags = tags((landingProxies || []).filter((proxy) => proxy.detour === region));
-    if (relayTags.length === 0) continue;
-    const relayTag = region + '-RELAY';
-    relayGroupTagByRegion[region] = relayTag;
-    config.outbounds.push({
-      tag: relayTag,
-      type: 'urltest',
-      outbounds: relayTags,
-      interrupt_exist_connections: true,
-    });
+    const chainTags = tags((landingProxies || []).filter((proxy) => proxy.detour === region));
+    if (chainTags.length) chainTagsByRegion[region] = chainTags;
   }
 
   const hk = tags(proxies, REGION_PATTERNS.HK);
@@ -129,18 +120,18 @@ function fillPolicyGroups(config, proxies, landingProxies) {
   );
   const others = tags(proxies, undefined).filter((tag) => !namedRegex.test(tag));
 
-  // 只要某个地区生成了 <地区>-RELAY 分组(说明这个地区有链式落地节点), 所有引用该地区的策略组
-  // 都统一用 <地区>-RELAY 代替原始机场分组, 不再同时显示"原始"和"链式"两个重复选项。
+  // 只要某个地区有链式落地节点, 所有引用该地区的策略组都直接把这个地区的原始 tag 换成
+  // 落地节点自己的 tag(可能不止一个), 不再同时显示"原始机场分组"和"链式节点"两个重复选项。
   // 没有链式节点的地区不受影响, 还是引用原始机场分组(不会出现空分组)。
-  const regionOrRelay = (region) => relayGroupTagByRegion[region] || region;
+  const regionOrChainNodes = (region) => chainTagsByRegion[region] || [region];
 
   // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),
   // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
   const groups = {
-    PROXY: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
-    EMBY: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
-    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['DE', 'OTHERS']),
-    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW'].map(regionOrRelay).concat(['OTHERS']),
+    PROXY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
+    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['DE', 'OTHERS']),
+    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
     HK: fallback(hk, allOrDirect),
     TW: fallback(tw, allOrDirect),
     SG: fallback(sg, allOrDirect),
@@ -148,10 +139,10 @@ function fillPolicyGroups(config, proxies, landingProxies) {
     JP: fallback(jp, allOrDirect),
     DE: fallback(de, allOrDirect),
     OTHERS: fallback(others, allOrDirect),
-    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP'].map(regionOrRelay),
-    AI: ['TW', 'US', 'SG', 'JP'].map(regionOrRelay),
-    META: ['TW', 'US', 'SG', 'JP'].map(regionOrRelay),
-    TIKTOK: ['TW', 'SG', 'US', 'JP'].map(regionOrRelay),
+    YOUTUBE: ['HK', 'TW', 'SG', 'US', 'JP'].flatMap(regionOrChainNodes),
+    AI: ['TW', 'US', 'SG', 'JP'].flatMap(regionOrChainNodes),
+    META: ['TW', 'US', 'SG', 'JP'].flatMap(regionOrChainNodes),
+    TIKTOK: ['TW', 'SG', 'US', 'JP'].flatMap(regionOrChainNodes),
   };
   // HK/TW/SG/US/JP 用 urltest 自动测速切换, 其余分组维持手动 selector
   const urltestTags = new Set(['HK', 'TW', 'SG', 'US', 'JP']);

@@ -11,6 +11,15 @@
 // 匹配到的落地节点会被自动加上 detour 指向对应的机场 urltest 分组(HK/TW/SG/US/JP),
 // 实现"机场入口(自动测速选优)+ 自建落地"的链式代理, 不需要手动写死任何节点信息。
 // 不传 landing_name 就完全不启用这个功能。
+//
+// 私有 DNS 解析(可选功能, 通用, 不写死具体机场):
+// 有些机场的节点域名是编码过的(比如走三网 BGP 多线入口), 只有走它自己指定的私有 DoH/DoT
+// 才能解析到正确的入口 IP, 走公共 DNS 可能解析错、或者只解析到单一线路导致某些运营商不适配。
+// 用法(dot_host/dot_match 都要传, 具体值找机场自己的说明文档/订阅里的 nameserver-policy 之类的字段):
+//   #type=0&name=ikuuu&dot_host=私有解析域名&dot_match=\.节点域名后缀$
+// 可选参数: dot_path(默认 /dns-query)、dot_port(默认 443)、dot_detour(默认 DIRECT, 一般不要改,
+// 否则可能出现"连代理要先解析域名, 解析域名又要先连代理"的死循环)。
+// dot_host、dot_match 两个都不传就完全不启用, 模板对任何机场都保持通用。
 
 const args = $arguments || {};
 const {
@@ -18,6 +27,11 @@ const {
   name = 'ikuuu',
   landing_name = '',
   landing_type = '0',
+  dot_host = '',
+  dot_path = '/dns-query',
+  dot_port = '443',
+  dot_detour = 'DIRECT',
+  dot_match = '',
 } = args;
 
 // 地区匹配正则, 机场分组和落地节点链式代理共用同一套
@@ -42,6 +56,9 @@ function avoidReservedTag(proxy) {
   return Object.assign({}, proxy, { tag: proxy.tag + ' (节点)' });
 }
 
+// 私有解析只在 dot_host 和 dot_match 都传了的时候才生效
+const dotRegex = dot_host && dot_match ? new RegExp(dot_match, 'i') : null;
+
 const config = (ProxyUtils.JSON5 || JSON).parse($content || $files[0]);
 
 const airportProxiesRaw = await produceArtifact({
@@ -55,6 +72,7 @@ const normalizedAirportProxies = sortFreeLast(
   uniqueByTag(airportProxiesRaw)
     .filter((proxy) => proxy && proxy.tag && !/warp|wrap|cloudflare/i.test(proxy.tag))
     .map(avoidReservedTag)
+    .map(withPrivateResolver)
 );
 
 let normalizedLandingProxies = [];
@@ -77,6 +95,7 @@ if (landing_name) {
 // 机场节点优先, 落地节点如果 tag 撞车了会被自动去重(保留机场那边的)
 const allProxies = uniqueByTag(normalizedAirportProxies.concat(normalizedLandingProxies));
 
+applyPrivateResolver(config);
 replaceGeneratedOutbounds(config, allProxies);
 fillPolicyGroups(config, normalizedAirportProxies, normalizedLandingProxies);
 
@@ -87,6 +106,45 @@ function matchChainRegion(tag) {
     if (REGION_PATTERNS[region].test(tag)) return region;
   }
   return null;
+}
+
+function applyPrivateResolver(config) {
+  const servers = config && config.dns && config.dns.servers;
+  const rules = config && config.dns && config.dns.rules;
+
+  if (Array.isArray(servers)) {
+    const index = servers.findIndex((s) => s && s.tag === 'dns-private');
+    if (!dot_host) {
+      if (index >= 0) servers.splice(index, 1);
+    } else {
+      const server = {
+        tag: 'dns-private',
+        type: 'https',
+        detour: dot_detour || 'DIRECT',
+        server: dot_host,
+        server_port: Number(dot_port) || 443,
+        path: dot_path || '/dns-query',
+      };
+      if (index >= 0) servers[index] = server;
+      else servers.push(server);
+    }
+  }
+
+  if (Array.isArray(rules)) {
+    const rIndex = rules.findIndex(
+      (r) => r && (r.server === 'dns-private' || r.domain_regex === 'PRIVATE_DOT_MATCH_REPLACE_ME')
+    );
+    if (!dot_host || !dot_match) {
+      if (rIndex >= 0) rules.splice(rIndex, 1);
+    } else if (rIndex >= 0) {
+      rules[rIndex] = { domain_regex: dot_match, server: 'dns-private' };
+    }
+  }
+}
+
+function withPrivateResolver(proxy) {
+  if (!dotRegex || !proxy || typeof proxy.server !== 'string' || !dotRegex.test(proxy.server)) return proxy;
+  return Object.assign({}, proxy, { domain_resolver: 'dns-private' });
 }
 
 function replaceGeneratedOutbounds(config, proxies) {

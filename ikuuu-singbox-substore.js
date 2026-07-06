@@ -127,11 +127,15 @@ function fillPolicyGroups(config, proxies, landingProxies) {
 
   // HK/TW/SG/US/JP 落地节点为空时直接兜底到全部节点(而不是 PROXY),
   // 避免 PROXY 只放分组 tag 之后, 分组和 PROXY 互相引用形成死循环
+  // GLOBAL 是"全局模式"专用的兜底选择, 干脆放全部单个节点(机场+落地), 不嵌套任何子分组,
+  // 这样每一个选项在客户端里都能被单独测速, 不会碰到"子策略组测不出延迟"的问题
+  const allIndividualTags = all.concat(tags(landingProxies || []));
+
   const groups = {
-    PROXY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
-    EMBY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
-    GLOBAL: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['DE', 'OTHERS']),
-    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes).concat(['OTHERS']),
+    PROXY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes),
+    EMBY: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes),
+    GLOBAL: allIndividualTags.length ? allIndividualTags : ['DIRECT'],
+    SPEEDTEST: ['HK', 'SG', 'JP', 'US', 'TW'].flatMap(regionOrChainNodes),
     HK: fallback(hk, allOrDirect),
     TW: fallback(tw, allOrDirect),
     SG: fallback(sg, allOrDirect),

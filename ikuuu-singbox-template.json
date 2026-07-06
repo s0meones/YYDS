@@ -28,6 +28,14 @@
         }
       },
       {
+        "tag": "dns-private",
+        "type": "https",
+        "detour": "DIRECT",
+        "server": "PRIVATE_DOT_HOST_REPLACE_ME",
+        "server_port": 443,
+        "path": "/dns-query"
+      },
+      {
         "tag": "dns-fakeip",
         "type": "fakeip",
         "inet4_range": "198.18.0.0/15",
@@ -52,6 +60,10 @@
           "sub-store.loocc.com"
         ],
         "server": "dns-local"
+      },
+      {
+        "domain_regex": "PRIVATE_DOT_MATCH_REPLACE_ME",
+        "server": "dns-private"
       },
       {
         "rule_set": "geosite-ads",

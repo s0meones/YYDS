@@ -13,12 +13,17 @@
 // 不传 landing_name 就完全不启用这个功能。
 //
 // 私有 DNS 解析(可选功能, 通用, 不写死具体机场):
-// 有些机场的节点域名是编码过的(比如走三网 BGP 多线入口), 只有走它自己指定的私有 DoH/DoT
+// 有些机场的节点域名是编码过的(比如走三网 BGP 多线入口), 只有走它自己指定的私有解析
 // 才能解析到正确的入口 IP, 走公共 DNS 可能解析错、或者只解析到单一线路导致某些运营商不适配。
 // 用法(dot_host/dot_match 都要传, 具体值找机场自己的说明文档/订阅里的 nameserver-policy 之类的字段):
 //   #type=0&name=ikuuu&dot_host=私有解析域名&dot_match=\.节点域名后缀$
-// 可选参数: dot_path(默认 /dns-query)、dot_port(默认 443)、dot_detour(默认 DIRECT, 一般不要改,
-// 否则可能出现"连代理要先解析域名, 解析域名又要先连代理"的死循环)。
+// 可选参数:
+//   dot_type: 'https'(默认, DoH, 443端口) 或 'tcp'(纯文本 DNS over TCP, 不走 TLS 握手)。
+//     校园网/公司网这类会对 443 端口做 SSL 中间人检测的环境, DoH 可能直接被拦截报证书错误,
+//     这种情况换成 dot_type=tcp(端口按机场给的改, 比如 ikuuu 是 54)通常能绕开, 因为没有 TLS 握手可拦。
+//   dot_path: DoH 模式下的路径, 默认 /dns-query, tcp 模式下无效。
+//   dot_port: 默认 443(https 模式)/53(tcp 模式), 具体看机场给的端口。
+//   dot_detour: 默认 DIRECT, 一般不要改, 否则可能出现"连代理要先解析域名, 解析域名又要先连代理"的死循环。
 // dot_host、dot_match 两个都不传就完全不启用, 模板对任何机场都保持通用。
 
 const args = $arguments || {};
@@ -28,8 +33,9 @@ const {
   landing_name = '',
   landing_type = '0',
   dot_host = '',
+  dot_type = 'https',
   dot_path = '/dns-query',
-  dot_port = '443',
+  dot_port = '',
   dot_detour = 'DIRECT',
   dot_match = '',
 } = args;
@@ -117,14 +123,23 @@ function applyPrivateResolver(config) {
     if (!dot_host) {
       if (index >= 0) servers.splice(index, 1);
     } else {
-      const server = {
-        tag: 'dns-private',
-        type: 'https',
-        detour: dot_detour || 'DIRECT',
-        server: dot_host,
-        server_port: Number(dot_port) || 443,
-        path: dot_path || '/dns-query',
-      };
+      const isTcp = String(dot_type).toLowerCase() === 'tcp';
+      const server = isTcp
+        ? {
+            tag: 'dns-private',
+            type: 'tcp',
+            detour: dot_detour || 'DIRECT',
+            server: dot_host,
+            server_port: Number(dot_port) || 53,
+          }
+        : {
+            tag: 'dns-private',
+            type: 'https',
+            detour: dot_detour || 'DIRECT',
+            server: dot_host,
+            server_port: Number(dot_port) || 443,
+            path: dot_path || '/dns-query',
+          };
       if (index >= 0) servers[index] = server;
       else servers.push(server);
     }

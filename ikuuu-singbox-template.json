@@ -55,13 +55,6 @@
         "action": "predefined"
       },
       {
-        "domain": [
-          "cpa.loocc.com",
-          "sub-store.loocc.com"
-        ],
-        "server": "dns-local"
-      },
-      {
         "domain_regex": "PRIVATE_DOT_MATCH_REPLACE_ME",
         "server": "dns-private"
       },
@@ -130,7 +123,7 @@
   "http_clients": [
     {
       "tag": "rule-download",
-      "detour": "PROXY"
+      "detour": "DIRECT"
     }
   ],
   "endpoints": [
@@ -319,13 +312,6 @@
         "outbound": "GLOBAL"
       },
       {
-        "domain": [
-          "cpa.loocc.com",
-          "sub-store.loocc.com"
-        ],
-        "outbound": "DIRECT"
-      },
-      {
         "ip_is_private": true,
         "outbound": "DIRECT"
       },
@@ -467,127 +453,127 @@
       {
         "tag": "geoip-cn",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geoip@rule-set/geoip-cn.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-cn",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geolocation-cn",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-geolocation-cn.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geolocation-!cn",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-geolocation-!cn.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-ads",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "speedtest-international",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/speedtest-international.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/speedtest-international.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-apple",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-apple.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-apple.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-google",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-google.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-youtube",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-youtube.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-youtube.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-tiktok",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-tiktok.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-tiktok.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-netflix",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-netflix.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-ai",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ai-!cn.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ai-!cn.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "geosite-meta",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-meta.srs",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-meta.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "polluted-ip",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/polluted-ip.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/polluted-ip.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "telegram-dc13",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc13.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/telegram-dc13.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "telegram-dc24",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc24.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/telegram-dc24.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "telegram-dc5",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/telegram-dc5.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/telegram-dc5.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "emby",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/emby.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/emby.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "httpdns-block",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/httpdns-block.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/httpdns-block.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "fakeip-filter",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/fakeip-filter.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/fakeip-filter.srs",
         "http_client": "rule-download"
       },
       {
         "tag": "doh-block",
         "type": "remote",
-        "url": "https://raw.githubusercontent.com/s0meones/YYDS/main/ruleset/doh-block.srs",
+        "url": "https://fastly.jsdelivr.net/gh/s0meones/YYDS@main/ruleset/doh-block.srs",
         "http_client": "rule-download"
       }
     ],

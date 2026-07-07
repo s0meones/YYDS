@@ -152,10 +152,8 @@
         "172.19.0.1/30",
         "fdfe:dcba:9876::1/126"
       ],
-      "dns_mode": "hijack",
       "auto_route": true,
-      "udp_timeout": "30s",
-      "stack": "gvisor"
+      "udp_timeout": "30s"
     }
   ],
   "outbounds": [
@@ -292,6 +290,11 @@
         "outbound": "ts-ep"
       },
       {
+        "network": "icmp",
+        "action": "reject",
+        "method": "drop"
+      },
+      {
         "port": 53,
         "action": "hijack-dns"
       },
@@ -306,18 +309,6 @@
         "rule_set": "doh-block",
         "port": 443,
         "action": "reject"
-      },
-      {
-        "ip_cidr": [
-          "127.0.0.0/8",
-          "::1/128"
-        ],
-        "outbound": "DIRECT"
-      },
-      {
-        "network": "icmp",
-        "action": "reject",
-        "method": "drop"
       },
       {
         "clash_mode": "Direct",
@@ -459,8 +450,7 @@
       },
       {
         "action": "resolve",
-        "server": "dns-local",
-        "strategy": "prefer_ipv4"
+        "server": "dns-local"
       },
       {
         "network": "udp",
